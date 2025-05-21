@@ -1,0 +1,15 @@
+{
+  "total": 502,
+  "source": {
+    "MIGRATION": 498,
+    "MANUAL": 4
+  },
+  "isAccountActivated": {
+    "true": 67,
+    "false": 435
+  },
+  "activationDate": {
+    "2025-05-19": 58,
+    "2025-05-20": 9
+  }
+}
