@@ -19,11 +19,6 @@ today_str = today.strftime("%Y-%m-%d")
 with open("stats.json", "r") as f:
     data = json.load(f)
 
-data["isAccountActivated"] = {
-    True: data["isAccountActivated"]["true"],
-    False: data["isAccountActivated"]["false"]
-}
-
 pdf_filename = f"statistiques_comptes_{today_str}_A4_pages.pdf"
 
 # Dimensions A4
@@ -75,7 +70,7 @@ with PdfPages(pdf_filename) as pdf:
     fig1 = plt.figure(figsize=(a4_width, a4_height))
     add_graph_title(fig1, "Répartition par source")
 
-    ax1 = fig1.add_axes([0.2, 0.25, 0.6, 0.6])  # graphique centré verticalement
+    ax1 = fig1.add_axes([0.2, 0.25, 0.6, 0.6])
     labels = [f"{k} ({v})" for k, v in data["source"].items()]
     values = list(data["source"].values())
     ax1.pie(values, labels=labels, autopct='%1.1f%%', startangle=140)
@@ -83,52 +78,54 @@ with PdfPages(pdf_filename) as pdf:
     pdf.savefig(fig1)
     plt.close(fig1)
 
-    # --- Page 3 : Comptes activés ---
+    # --- Page 3 : Comptes activés par source ---
     fig2 = plt.figure(figsize=(a4_width, a4_height))
-    add_graph_title(fig2, "Comptes activés vs non activés")
+    add_graph_title(fig2, "Comptes activés par source")
 
     ax2 = fig2.add_axes([0.2, 0.25, 0.6, 0.6])
-    labels = ['Activés', 'Non activés']
-    sizes = [data["isAccountActivated"][True], data["isAccountActivated"][False]]
-    bars = ax2.bar(labels, sizes, color=['green', 'red'])
+    sources = list(data["accountActivation"]["bySource"].keys())
+    activated = [data["accountActivation"]["bySource"][src]["activated"] for src in sources]
+    not_activated = [data["accountActivation"]["bySource"][src]["notActivated"] for src in sources]
 
+    bar_width = 0.35
+    x = range(len(sources))
+    ax2.bar(x, activated, width=bar_width, label='Activés', color='green')
+    ax2.bar([i + bar_width for i in x], not_activated, width=bar_width, label='Non activés', color='red')
+
+    ax2.set_xticks([i + bar_width / 2 for i in x])
+    ax2.set_xticklabels(sources)
     ax2.set_ylabel("Nombre de comptes")
-    for bar in bars:
-        height = bar.get_height()
-        ax2.text(bar.get_x() + bar.get_width() / 2, height + 3, str(height), ha='center')
-
+    ax2.legend()
     ax2.spines['top'].set_visible(False)
     ax2.spines['right'].set_visible(False)
+
+    for i in range(len(sources)):
+        ax2.text(i, activated[i] + 1, str(activated[i]), ha='center')
+        ax2.text(i + bar_width, not_activated[i] + 1, str(not_activated[i]), ha='center')
+
     fig2.tight_layout(pad=3)
     pdf.savefig(fig2)
     plt.close(fig2)
 
-    # --- Page 4 : Activations par date ---
+    # --- Page 4 : Activations dans le temps par source ---
     fig3 = plt.figure(figsize=(a4_width, a4_height))
-    add_graph_title(fig3, "Activations dans le temps")
+    add_graph_title(fig3, "Activations dans le temps par source")
 
     ax3 = fig3.add_axes([0.15, 0.25, 0.7, 0.6])
-    dates = [datetime.strptime(k, "%Y-%m-%d") for k in data["activationDate"].keys()]
-    counts = list(data["activationDate"].values())
-    ax3.plot(dates, counts, marker='o', linestyle='-', color='blue')
+    sources = list(data["source"].keys())
+    dates = sorted(data["activationDate"].keys())
+    date_objs = [datetime.strptime(date, "%Y-%m-%d") for date in dates]
 
-    ax3.set_xticks(dates)
-    ax3.set_xticklabels([d.strftime('%Y-%m-%d') for d in dates], rotation=45)
-    ax3.grid(True)
+    for source in sources:
+        counts = [data["activationDate"].get(date, {}).get(source, 0) for date in dates]
+        ax3.plot(date_objs, counts, marker='o', label=source)
 
+    ax3.set_xticks(date_objs)
+    ax3.set_xticklabels([d.strftime('%Y-%m-%d') for d in date_objs], rotation=45)
     ax3.set_xlabel("Date")
     ax3.set_ylabel("Nombre d'activations")
-    ax3.yaxis.set_label_coords(-0.1, 1.02)
-    ax3.xaxis.set_label_coords(1.02, -0.12)
-
-    y_max = max(counts)
-    ax3.set_ylim(0, y_max * 1.3)
-
-    for x, y in zip(dates, counts):
-        ax3.text(x, y + y_max * 0.05, str(y), ha='center', va='bottom', fontsize=9)
-
-    ax3.spines['top'].set_visible(False)
-    ax3.spines['right'].set_visible(False)
+    ax3.grid(True)
+    ax3.legend()
     fig3.tight_layout(pad=3)
     pdf.savefig(fig3)
     plt.close(fig3)
