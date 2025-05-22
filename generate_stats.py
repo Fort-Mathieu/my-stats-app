@@ -15,6 +15,11 @@ today = datetime.now()
 today_fr = today.strftime("%-d %B %Y")
 today_str = today.strftime("%Y-%m-%d")
 
+colors = [
+    "#4CAF50", "#F44336", "#2196F3", "#FFC107", "#9C27B0", "#FF9800",
+    "#009688", "#E91E63", "#3F51B5", "#CDDC39", "#00BCD4", "#8BC34A"
+]
+
 # Charger les données
 with open("stats.json", "r") as f:
     data = json.load(f)
