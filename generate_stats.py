@@ -24,7 +24,7 @@ colors = [
 with open("stats.json", "r") as f:
     data = json.load(f)
 
-pdf_filename = f"statistiques_comptes_{today_str}_A4_pages.pdf"
+pdf_filename = f"statistiques_comptes_{today_str}.pdf"
 
 # Dimensions A4
 a4_width, a4_height = 8.27, 11.69
@@ -95,7 +95,7 @@ with PdfPages(pdf_filename) as pdf:
     bar_width = 0.35
     x = range(len(sources))
     ax2.bar(x, activated, width=bar_width, label='Activés', color='green')
-    ax2.bar([i + bar_width for i in x], not_activated, width=bar_width, label='Non activés', color='red')
+    ax2.bar([i + bar_width for i in x], not_activated, width=bar_width, label='Non activés', color='lightgray')
 
     ax2.set_xticks([i + bar_width / 2 for i in x])
     ax2.set_xticklabels(sources)
@@ -121,9 +121,24 @@ with PdfPages(pdf_filename) as pdf:
     dates = sorted(data["activationDate"].keys())
     date_objs = [datetime.strptime(date, "%Y-%m-%d") for date in dates]
 
-    for source in sources:
+    # Taille de texte dynamique (entre 6 et 9)
+    nb_points = len(date_objs)
+    text_size = max(6, min(9, int(200 / nb_points)))  # Ajuste à volonté
+
+    for i, source in enumerate(sources):
         counts = [data["activationDate"].get(date, {}).get(source, 0) for date in dates]
-        ax3.plot(date_objs, counts, marker='o', label=source)
+        line_color = colors[i % len(colors)]
+        ax3.plot(date_objs, counts, marker='o', label=source, color=line_color)
+
+        # Ajouter les annotations avec couleur + fond blanc
+        for x, y in zip(date_objs, counts):
+            if y > 0:
+                ax3.text(
+                    x, y + 0.5, str(y),
+                    ha='center', va='bottom',
+                    fontsize=text_size, color=line_color,
+                    bbox=dict(facecolor='white', alpha=0.8, edgecolor='none', boxstyle='round,pad=0.2')
+                )
 
     ax3.set_xticks(date_objs)
     ax3.set_xticklabels([d.strftime('%Y-%m-%d') for d in date_objs], rotation=45)
