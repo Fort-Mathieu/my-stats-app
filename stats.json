@@ -1,25 +1,25 @@
 {
-  "total": 526,
+  "total": 559,
   "source": {
-    "MIGRATION": 498,
-    "MES": 19,
-    "MANUAL": 9
+    "MIGRATION": 516,
+    "MES": 22,
+    "MANUAL": 21
   },
   "accountActivation": {
-    "activated": 87,
-    "notActivated": 439,
+    "activated": 123,
+    "notActivated": 436,
     "bySource": {
       "MIGRATION": {
-        "activated": 80,
-        "notActivated": 418
+        "activated": 100,
+        "notActivated": 416
       },
       "MES": {
-        "activated": 3,
+        "activated": 6,
         "notActivated": 16
       },
       "MANUAL": {
-        "activated": 4,
-        "notActivated": 5
+        "activated": 17,
+        "notActivated": 4
       }
     }
   },
@@ -33,12 +33,28 @@
       "MANUAL": 3
     },
     "2025-05-19": {
-      "MIGRATION": 58
+      "MIGRATION": 68,
+      "MANUAL": 4
+    },
+    "2025-05-25": {
+      "MANUAL": 3,
+      "MIGRATION": 2
     },
     "2025-05-22": {
+      "MANUAL": 2,
+      "MIGRATION": 5,
+      "MES": 2
+    },
+    "2025-05-23": {
+      "MIGRATION": 6,
       "MANUAL": 1,
-      "MIGRATION": 3,
       "MES": 1
+    },
+    "2025-05-24": {
+      "MES": 1
+    },
+    "2025-05-26": {
+      "MANUAL": 4
     }
   }
 }
