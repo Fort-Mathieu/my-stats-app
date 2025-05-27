@@ -1,13 +1,13 @@
 {
-  "total": 559,
+  "total": 571,
   "source": {
     "MIGRATION": 516,
-    "MES": 22,
-    "MANUAL": 21
+    "MES": 28,
+    "MANUAL": 27
   },
   "accountActivation": {
-    "activated": 123,
-    "notActivated": 436,
+    "activated": 128,
+    "notActivated": 443,
     "bySource": {
       "MIGRATION": {
         "activated": 100,
@@ -15,11 +15,11 @@
       },
       "MES": {
         "activated": 6,
-        "notActivated": 16
+        "notActivated": 22
       },
       "MANUAL": {
-        "activated": 17,
-        "notActivated": 4
+        "activated": 22,
+        "notActivated": 5
       }
     }
   },
@@ -52,6 +52,9 @@
     },
     "2025-05-24": {
       "MES": 1
+    },
+    "2025-05-27": {
+      "MANUAL": 5
     },
     "2025-05-26": {
       "MANUAL": 4
